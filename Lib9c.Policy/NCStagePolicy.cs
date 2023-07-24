@@ -9,14 +9,16 @@ namespace Nekoyume.Blockchain
     using Libplanet.Blockchain;
     using Libplanet.Blockchain.Policies;
     using Libplanet.Tx;
+    using Serilog;
 
     public class NCStagePolicy : IStagePolicy
     {
+        private static Dictionary<Address, DateTimeOffset> _bannedAccountTracker = new();
         private readonly VolatileStagePolicy _impl;
         private readonly ConcurrentDictionary<Address, SortedList<Transaction, TxId>> _txs;
         private readonly int _quotaPerSigner;
 
-        private static readonly ImmutableHashSet<Address> _bannedAccounts = new[]
+        private ImmutableHashSet<Address> _bannedAccounts = new[]
         {
             new Address("de96aa7702a7a1fd18ee0f84a5a0c7a2c28ec840"),
             new Address("153281c93274bEB9726A03C33d3F19a8D78ad805"),
@@ -78,6 +80,16 @@ namespace Nekoyume.Blockchain
                     {
                         s.Remove(s.Max);
                     }
+
+                    if (s.Count - _quotaPerSigner > -1)
+                    {
+                        if (!_bannedAccountTracker.ContainsKey(tx.Signer))
+                        {
+                            Log.Debug("Adding {signer} to banned accounts for 30 minutes", tx.Signer);
+                            _bannedAccountTracker.Add(tx.Signer, DateTimeOffset.Now);
+                            _bannedAccounts = _bannedAccounts.Add(tx.Signer);
+                        }
+                    }
                 }
 
 #pragma warning disable LAA1002 // DictionariesOrSetsShouldBeOrderedToEnumerate
@@ -94,6 +106,16 @@ namespace Nekoyume.Blockchain
         {
             if (_bannedAccounts.Contains(transaction.Signer))
             {
+                if (_bannedAccountTracker.ContainsKey(transaction.Signer))
+                {
+                    if ((DateTimeOffset.Now - _bannedAccountTracker[transaction.Signer]).Minutes >= 30)
+                    {
+                        Log.Debug("Removing {signer} from banned accounts after 30 minutes", transaction.Signer);
+                        _bannedAccountTracker.Remove(transaction.Signer);
+                        _bannedAccounts = _bannedAccounts.Remove(transaction.Signer);
+                    }
+                }
+
                 return false;
             }
 
