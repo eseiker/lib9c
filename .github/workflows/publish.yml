@@ -16,7 +16,7 @@ jobs:
       with:
         dotnet-version: 6.0.100
     - name: bulid
-      run: |
+      "run": |
         dotnet_args="-c Release -p:NoPackageAnalysis=true"
         if [[ ! "$GITHUB_REF" =~ ^refs/tags/* ]]; then
           project_suffix=dev.${{ github.sha }}
