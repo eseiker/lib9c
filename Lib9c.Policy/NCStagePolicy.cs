@@ -19,6 +19,7 @@ namespace Nekoyume.Blockchain
         private static readonly ImmutableHashSet<Address> _whiteListAccounts = new[]
         {
             new Address("BdA56083bccdb09583c64Af10Ce7e78679abD6C6"),
+            new Address("cad60f18b4ba189f7f1c14e2267d9b20f5b16ff5"),
         }.ToImmutableHashSet();
 
         private static readonly ImmutableHashSet<Address> _bannedAccounts = new[]
