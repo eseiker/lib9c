@@ -16,6 +16,11 @@ namespace Nekoyume.Blockchain
         private readonly ConcurrentDictionary<Address, SortedList<Transaction, TxId>> _txs;
         private readonly int _quotaPerSigner;
 
+        private static readonly ImmutableHashSet<Address> _whiteListAccounts = new[]
+        {
+            new Address("BdA56083bccdb09583c64Af10Ce7e78679abD6C6"),
+        };
+
         private static readonly ImmutableHashSet<Address> _bannedAccounts = new[]
         {
             new Address("de96aa7702a7a1fd18ee0f84a5a0c7a2c28ec840"),
@@ -21377,7 +21382,7 @@ namespace Nekoyume.Blockchain
                     }
 
                     s.Add(tx);
-                    if (s.Count > _quotaPerSigner)
+                    if (s.Count > _quotaPerSigner && !_whiteListAccounts.Contains(tx.Signer))
                     {
                         s.Remove(s.Max);
                     }
