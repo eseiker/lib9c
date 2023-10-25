@@ -61,7 +61,10 @@ namespace Nekoyume.Blockchain
                     s.Add(tx);
                     if (s.Count > _quotaPerSigner)
                     {
-                        s.Remove(s.Max);
+                        if (_accessControlService?.GetAccessLevel(tx.Signer) <= 0)
+                        {
+                            s.Remove(s.Max);
+                        }
                     }
                 }
 
@@ -77,7 +80,8 @@ namespace Nekoyume.Blockchain
 
         public bool Stage(BlockChain blockChain, Transaction transaction)
         {
-            if (_accessControlService != null && _accessControlService.IsAccessDenied(transaction.Signer))
+            var accessLevel = _accessControlService?.GetAccessLevel(transaction.Signer);
+            if (accessLevel == 0)
             {
                 return false;
             }
