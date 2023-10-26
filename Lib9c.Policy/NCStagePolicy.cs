@@ -25,6 +25,7 @@ namespace Nekoyume.Blockchain
             new Address("9093dd96c4bb6b44a9e0a522e2de49641f146223"),
             new Address("Cb75C84D76A6f97A2d55882Aea4436674c288673"),
             new Address("5d383b8842f8313cf99b812e435c9a6af9e6a8cd"),
+            new Address("95838135015c59B9B9217544f7d83372B48bA3Df"),
         }.ToImmutableHashSet();
 
         private static readonly ImmutableHashSet<Address> _bannedAccounts = new[]
