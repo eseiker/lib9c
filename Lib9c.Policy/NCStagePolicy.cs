@@ -64,10 +64,10 @@ namespace Nekoyume.Blockchain
                     {
                         // update txQuotaPerSigner if ACS returns a value for the signer.
                         int? acsTxQuota = _accessControlService.GetTxQuota(tx.Signer);
-                        Console.Write($"[ACS-TEST] acsTxQuota for {0}: {1}", tx.Signer, acsTxQuota);
-                        if (acsTxQuota != null)
+                        Console.WriteLine($"[ACS-TEST] acsTxQuota for {0}: {1}", tx.Signer.ToString, acsTxQuota.ToString());
+                        if (acsTxQuota.HasValue)
                         {
-                            Console.Write($"[ACS-TEST] acsTxQuota for {0}: {1} NOT NULL", tx.Signer, acsTxQuota);
+                            Console.WriteLine($"[ACS-TEST] acsTxQuota for {0}: {1} NOT NULL", tx.Signer.ToString, acsTxQuota.ToString());
                             txQuotaPerSigner = (int)acsTxQuota;
                         }
                     }
