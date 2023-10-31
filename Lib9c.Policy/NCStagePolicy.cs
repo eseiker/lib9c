@@ -76,9 +76,10 @@ namespace Nekoyume.Blockchain
                     Console.WriteLine("[ACS-TEST] 2. txQuota for {0}: txQuotaPerSigner: {1} _quotaPerSigner: {2} sCount: {3}", tx.Signer, txQuotaPerSigner, _quotaPerSigner, s.Count);
                     if (s.Count > txQuotaPerSigner)
                     {
-                        Console.WriteLine("[ACS-TEST] {0} {1} is greater than {2}", tx.Signer, s.Count, txQuotaPerSigner);
+                        Console.WriteLine("[ACS-TEST] {0} sCount {1} is greater than {2}", tx.Signer, s.Count, txQuotaPerSigner);
                         Console.WriteLine("[ACS-TEST] REMOVE: {0} {1}", tx.Signer, s.Max.Actions.FirstOrDefault());
                         s.Remove(s.Max);
+                        Console.WriteLine("[ACS-TEST] RESULT: {0} sCount {1}", tx.Signer, s.Count);
                     }
                 }
 
