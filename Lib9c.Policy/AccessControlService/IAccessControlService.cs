@@ -6,6 +6,6 @@ namespace Nekoyume.Blockchain
     {
         public bool IsAccessDenied(Address address);
 
-        public int GetAccessLevel(Address address);
+        public int? GetTxQuota(Address address);
     }
 }
