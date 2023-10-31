@@ -60,6 +60,7 @@ namespace Nekoyume.Blockchain
 
                     s.Add(tx);
                     int txQuotaPerSigner = _quotaPerSigner;
+                    Console.WriteLine("[ACS-TEST] 1. txQuota for {0}: txQuotaPerSigner: {1} _quotaPerSigner: {2} sCount: {3}", tx.Signer, txQuotaPerSigner, _quotaPerSigner, s.Count);
                     if (_accessControlService != null)
                     {
                         // update txQuotaPerSigner if ACS returns a value for the signer.
@@ -72,8 +73,10 @@ namespace Nekoyume.Blockchain
                         }
                     }
 
+                    Console.WriteLine("[ACS-TEST] 2. txQuota for {0}: txQuotaPerSigner: {1} _quotaPerSigner: {2} sCount: {3}", tx.Signer, txQuotaPerSigner, _quotaPerSigner, s.Count);
                     if (s.Count > txQuotaPerSigner)
                     {
+                        Console.WriteLine("[ACS-TEST] REMOVE: {0}", s.Max);
                         s.Remove(s.Max);
                     }
                 }
