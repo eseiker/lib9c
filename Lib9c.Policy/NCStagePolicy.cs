@@ -64,12 +64,10 @@ namespace Nekoyume.Blockchain
                     if (_accessControlService != null)
                     {
                         // update txQuotaPerSigner if ACS returns a value for the signer.
-                        int? acsTxQuota = _accessControlService.GetTxQuota(tx.Signer);
-                        Console.WriteLine("[ACS-TEST] acsTxQuota for {0}: {1}", tx.Signer, acsTxQuota);
-                        if (acsTxQuota.HasValue)
+                        if (_accessControlService.GetTxQuota(tx.Signer) is { } acsTxQuota)
                         {
-                            Console.WriteLine("[ACS-TEST] acsTxQuota for {0}: {1} NOT NULL", tx.Signer, acsTxQuota);
-                            txQuotaPerSigner = (int)acsTxQuota;
+                            Console.WriteLine("[ACS-TEST] acsTxQuota for {0}: {1}", tx.Signer, acsTxQuota);
+                            txQuotaPerSigner = acsTxQuota;
                         }
                     }
 
@@ -96,8 +94,10 @@ namespace Nekoyume.Blockchain
         public bool Stage(BlockChain blockChain, Transaction transaction)
         {
             var acsTxQuota = _accessControlService?.GetTxQuota(transaction.Signer);
-            if (_accessControlService != null && acsTxQuota == 0)
+            Console.WriteLine("[ACS-TEST-STAGE] STAGE acsTxQuota for {0}: {1}", transaction.Signer, acsTxQuota);
+            if (acsTxQuota == 0)
             {
+                Console.WriteLine("[ACS-TEST-STAGE] DENY TX STAGING for {0}: {1}", transaction.Signer, acsTxQuota);
                 return false;
             }
 
