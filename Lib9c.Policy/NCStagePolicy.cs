@@ -61,14 +61,12 @@ namespace Nekoyume.Blockchain
                     s.Add(tx);
                     int txQuotaPerSigner = _quotaPerSigner;
                     Console.WriteLine("[ACS-TEST] 1. txQuota for {0}: txQuotaPerSigner: {1} _quotaPerSigner: {2} sCount: {3}", tx.Signer, txQuotaPerSigner, _quotaPerSigner, s.Count);
-                    if (_accessControlService != null)
+
+                    // update txQuotaPerSigner if ACS returns a value for the signer.
+                    if (_accessControlService?.GetTxQuota(tx.Signer) is { } acsTxQuota)
                     {
-                        // update txQuotaPerSigner if ACS returns a value for the signer.
-                        if (_accessControlService.GetTxQuota(tx.Signer) is { } acsTxQuota)
-                        {
-                            Console.WriteLine("[ACS-TEST] acsTxQuota for {0}: {1}", tx.Signer, acsTxQuota);
-                            txQuotaPerSigner = acsTxQuota;
-                        }
+                        Console.WriteLine("[ACS-TEST] acsTxQuota for {0}: {1}", tx.Signer, acsTxQuota);
+                        txQuotaPerSigner = acsTxQuota;
                     }
 
                     Console.WriteLine("[ACS-TEST] 2. txQuota for {0}: txQuotaPerSigner: {1} _quotaPerSigner: {2} sCount: {3}", tx.Signer, txQuotaPerSigner, _quotaPerSigner, s.Count);
@@ -93,9 +91,9 @@ namespace Nekoyume.Blockchain
 
         public bool Stage(BlockChain blockChain, Transaction transaction)
         {
-            var acsTxQuota = _accessControlService?.GetTxQuota(transaction.Signer);
-            Console.WriteLine("[ACS-TEST-STAGE] STAGE acsTxQuota for {0}: {1}", transaction.Signer, acsTxQuota);
-            if (acsTxQuota == 0)
+            // var acsTxQuota = _accessControlService?.GetTxQuota(transaction.Signer);
+            // Console.WriteLine("[ACS-TEST-STAGE] STAGE acsTxQuota for {0}: {1}", transaction.Signer, acsTxQuota);
+            if (_accessControlService?.GetTxQuota(transaction.Signer) is { } acsTxQuota and 0)
             {
                 Console.WriteLine("[ACS-TEST-STAGE] DENY TX STAGING for {0}: {1}", transaction.Signer, acsTxQuota);
                 return false;
