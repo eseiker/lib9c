@@ -105,6 +105,13 @@ namespace Nekoyume.Blockchain
                         return false;
                     }
                 }
+                else
+                {
+                    if (_quotaPerSigner < 1)
+                    {
+                        return false;
+                    }
+                }
 
                 var deniedTxs = new[]
                 {
